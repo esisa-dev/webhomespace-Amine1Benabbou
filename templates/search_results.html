@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Search Results</title>
+	<style>
+
+		body {
+		font-family: Arial, sans-serif;
+		margin: 0;
+		padding: 0;
+		}
+
+		.search-page{
+				display: grid;
+				grid-gap: 20px; 
+				padding: 20px;
+				border: 1px solid black;
+				max-width: 800px;
+				margin: auto;
+				background-color: rgba(205, 205, 205, 0.157);
+				font-family:'Courier New', Courier, monospace
+		}
+
+
+		h1 {
+		font-size: 36px;
+		text-align: center;
+		margin-top: 40px;
+		margin-bottom: 20px;
+		color: navy;
+		font-family: 'Courier New', Courier, monospace;
+		}
+
+
+		ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		}
+
+
+		li {
+		margin-bottom: 10px;
+		padding: 10px;
+		border: 1px solid #ffffff;
+		border-radius: 5px;
+		box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+		}
+
+		p {
+		text-align: center;
+		font-style: italic;
+		color: #999;
+		}
+
+		li:before {
+		content: attr(data-modified) " | " attr(data-size);
+		font-size: 12px;
+		color: #999;
+		display: block;
+		margin-top: 5px;
+		}
+
+		ul{
+			background-color: white;
+		}
+
+	</style>
+
+</head>
+<body>
+	<div class="search-page">
+	<h1>Search Results</h1>
+	<thead>
+		<tr>
+			<th>Name</th>
+		</tr>
+	</thead>
+	{% if results %}
+		<ul>
+		{% for result in results %}
+			<li data-modified="{{ result.modified }}" data-size="{{ result.size }}">{{ result }}</li>
+		{% endfor %}
+		</ul>
+	{% else %}
+		<p>No results found.</p>
+	{% endif %}
+	</div>
+</body>
+</html>
+

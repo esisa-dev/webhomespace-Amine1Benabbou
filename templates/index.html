@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Home</title>
+		
+		<style>
+			.index-page {
+				display: grid;
+				grid-gap: 20px; 
+				padding: 20px;
+				border: 1px solid black;
+				max-width: 800px;
+				margin: auto;
+				background-color: rgba(205, 205, 205, 0.157);
+				font-family: Calibri;
+			}
+		
+			.container {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.files {
+				color: white;
+				background-color: rgb(243, 128, 166);
+				border-radius: 20% 20% 20% 20%;
+				padding: 10px;
+				margin-right: 10px;
+				font-size: 18px;
+    			font-weight: bold;
+				max-width: 20%;
+			}
+			
+			.dirs {
+				color: white;
+				background-color: rgb(0, 157, 255);
+				border-radius: 20% 20% 20% 20%;
+				padding: 10px;
+				margin-right: 10px;
+				font-size: 18px;
+    			font-weight: bold;
+				max-width: 20%;
+			}
+			
+			.space {
+				color: white;
+				background-color: rgb(26, 218, 55);
+				border-radius: 20% 20% 20% 20%;
+				padding: 10px;
+				margin-right: 10px;
+				font-size: 18px;
+    			font-weight: bold;
+				max-width: 30%;
+			}
+				
+			table {
+			border-collapse: collapse;
+			width: 100%;
+			font-size: 0.9rem;
+			}
+
+			th {
+			text-align: left;
+			padding: 0.5rem;
+			border-bottom: 2px solid #dfe4ea;
+			background-color: #292929;
+			font-weight: bolder;
+			color: rgba(180, 180, 180, 0.87);
+			font-family: 'Segoe UI';
+			}
+
+			td {
+			padding: 0.5rem;
+			border-bottom: 1px solid #292929;
+			font-family: 'Segoe UI';
+			}
+
+			tbody tr:nth-child(even) {
+			background-color: #1e1e1e;
+			color: white;
+			}
+
+			tbody tr:nth-child(odd) {
+			background-color: #292929;
+			color: white;
+			}
+
+			a.file-link {
+				color: white;
+				text-decoration: none;
+			}
+
+			a.dirfile {
+				color: whitesmoke;
+				text-decoration: none;
+				font-weight: 400;
+			}
+
+			a.logout {
+				color: rgb(189, 22, 22);
+				text-decoration: none;
+				font-weight: bolder;
+				font-size: 20px;
+				font-family: 'Courier New', Courier, monospace;
+			}
+
+			a.retour{
+				color: white;
+				text-decoration: none;
+			}
+
+			a.download {
+				color: rgb(68, 0, 255);
+				text-decoration: none;
+				font-weight: bolder;
+				font-size: 20px;
+				font-family: 'Courier New', Courier, monospace;
+				text-align: center;
+			}
+
+			h1 {
+				font-size: 30px;
+				color: navy;
+				text-align: center;
+				margin-top: 40px;
+				font-family: 'Courier New', Courier, monospace;
+			}
+		  	</style>
+</head>
+
+<body>
+	<div class="index-page">
+	{% if username %}
+		<h1>Welcome to your homepage {{ username }}!</h1>
+		<div class="container">
+			<button class="files" type="button">{{ num_files }} files</button>
+			<button class="dirs"  type="button">{{ num_dirs }} directories</button>
+			<button class="space" type="button">{{ space_used }} bytes used</button>
+		</div>
+
+		<form action="/search" method="post">
+			<label for="search-term">Search for:</label>
+			<input type="text" id="search-term" name="search-term">
+			<label for="search-type">in:</label>
+			<select id="search-type" name="search-type">
+				<option value="name">File name</option>
+				<option value="extension">File extension</option>
+			</select>
+			<input type="submit" value="Search">
+		</form>
+		<br>
+		<a href="/download" class="download">Download home directory as ZIP</a>
+		<br>
+		<br>
+		<table>
+			<thead>
+				<tr>
+					<th>Dossiers</th>
+					<th>Date de Modification</th>
+					<th>Taille</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					{% if current_working_directory  != home_dir%}
+						<td><a href="/navigate?path=.." class="retour">..</a></td>
+					{% else %}
+						<td></td>
+					{% endif%}
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			
+				{% for i in range(file_list|length-1) %}
+                            <tr>
+                                {% set item = file_list[i] %}
+                                {% set date = file_list_date[i+1] %}
+                                {% set size = file_list_size[i+1] %}
+                                
+                            {% if '.' not in item%}
+                                <td><strong><a href="/navigate?path={{current_working_directory + '/' + item}}" class="dirfile">{{item}}</a></strong></td>
+                                
+                                {% elif '.txt'in item %}
+                                <td><strong><a href="/view?file={{current_working_directory + '/' + item}}" class="dirfile">{{item}}</a></strong></td>
+								{% else %}
+								<td>{{item}}</td>
+                            {% endif%}
+							<td>{{date}}</td>
+                            <td>{{size}}</td>
+    </tr>
+{% endfor %}
+			</tbody>
+		</table>
+		
+		<br>
+		<a href="/logout" class="logout">Log out</a>
+	{% else %}
+		<p>You are not logged in. <a href="/login">Log in</a> to access your home directory.</p>
+	{% endif %}
+	</div>
+</body>
+</html>
